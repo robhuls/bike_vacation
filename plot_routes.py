@@ -6,10 +6,11 @@ from bs4 import BeautifulSoup
 import pandas as pd
 from fitparse import FitFile
 from scrape_bigs import scrape_bigs
-
-directory_to_process = '2019-1'
-big_numbers = list(range(101, 110))
+ 
+directory_to_process = '2021-01'
+big_numbers = list(range(151, 200))  # +list(range(190, 200))+list(range(111,150))
 scrape_big_numbers = False  # Scrape big numbers
+base_location = [50, 8.5]
 
 os.chdir(directory_to_process)
 if scrape_big_numbers:
@@ -18,7 +19,7 @@ if scrape_big_numbers:
 colors = ['red', 'blue', 'purple', 'orange', 'darkred', 'lightred', 'beige', 'darkblue', 'lightblue', 'cadetblue']
 
 # Read the locations of the BIGS\
-all_bigs = pd.read_csv('BIGS.txt')
+all_bigs = pd.read_csv('bigs.txt')
 
 # Scrape the BIGS you claimed
 print('Scraping the BIGs you claimed')
@@ -30,7 +31,7 @@ for link in soup.find_all('a'):
         claimed_numbers.append(int(link.get('href').split('/')[-2]))
 
 # Create a map
-my_map = folium.Map(location=[50.0, 7.0], zoom_start=9)
+my_map = folium.Map(location=base_location, zoom_start=9)
 folium.TileLayer('Stamen Toner').add_to(my_map)
 
 # Add BIGS to the map
@@ -60,10 +61,16 @@ def plot_gpx(gpx_filename, gpx_color):
     gpx_path = [(gpx_lat, gpx_lon) for gpx_lat, gpx_lon in zip(lat_list, lon_list)]
     folium.PolyLine(gpx_path, color=gpx_color, weight=5).add_to(my_map)
 
-# Add planned routes to map
-os.chdir('planned')
+# Added ridden gpx files
+os.chdir(os.path.join('ridden'))
 for filename in os.listdir('.'):
-    if 'gpx' in filename:
+    if 'gpx' in filename or 'GPX' in filename:
+        plot_gpx(filename, 'blue')
+
+# Add planned routes to map
+os.chdir(os.path.join('..','planned'))
+for filename in os.listdir('.'):
+    if 'gpx' in filename or 'GPX' in filename:
         plot_gpx(filename, 'green')
 
 # Add ridden files to map
@@ -89,7 +96,7 @@ with open('campsites.txt') as fid:
     for line in fid.readlines():
         data = line.split(',')
         popup = folium.Popup(data[2], parse_html=True)
-        folium.Marker([float(data[0]), float(data[1])], popup=popup, icon=folium.Icon(color='red')).add_to(my_map)
+        folium.Marker([float(data[0]), float(data[1])], popup=popup, icon=folium.Icon(color='blue')).add_to(my_map)
         print('Adding', line.strip('\n'))
 os.chdir('..')
 
