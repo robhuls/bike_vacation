@@ -4,3 +4,9 @@ BIGS.txt
 __pycache__/
 vacation_planning.html
 2019-1/Kurztrips.pdf
+2021-01/Kurztrips.pdf
+2019-1/*
+2019-2/*
+2019-3/*
+2021-01/*
+/.vscode
