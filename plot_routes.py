@@ -7,16 +7,17 @@ import pandas as pd
 from fitparse import FitFile
 from scrape_bigs import scrape_bigs
  
-directory_to_process = '2021-01'
-big_numbers = list(range(151, 200))  # +list(range(190, 200))+list(range(111,150))
+directory_to_process = '2023_Luxemburg'
+big_numbers = list(range(24238, 24275))  # NATACHA Luxemburg
+big_numbers = big_numbers + list(range(138, 151))
 scrape_big_numbers = False  # Scrape big numbers
-base_location = [50, 8.5]
+base_location = [50, 6.5]
 
 os.chdir(directory_to_process)
 if scrape_big_numbers:
     scrape_bigs(big_numbers)
 
-colors = ['red', 'blue', 'purple', 'orange', 'darkred', 'lightred', 'beige', 'darkblue', 'lightblue', 'cadetblue']
+colors = ['red', 'blue', 'purple', 'orange', 'darkred', 'lightred', 'beige', 'darkblue', 'lightblue', 'cadetblue', 'beige']
 
 # Read the locations of the BIGS\
 all_bigs = pd.read_csv('bigs.txt')
@@ -31,7 +32,7 @@ for link in soup.find_all('a'):
         claimed_numbers.append(int(link.get('href').split('/')[-2]))
 
 # Create a map
-my_map = folium.Map(location=base_location, zoom_start=9)
+my_map = folium.Map(location=base_location, zoom_start=10)
 folium.TileLayer('Stamen Toner').add_to(my_map)
 
 # Add BIGS to the map
@@ -62,7 +63,8 @@ def plot_gpx(gpx_filename, gpx_color):
     folium.PolyLine(gpx_path, color=gpx_color, weight=5).add_to(my_map)
 
 # Added ridden gpx files
-os.chdir(os.path.join('ridden'))
+print(os.getcwd())
+os.chdir('ridden')
 for filename in os.listdir('.'):
     if 'gpx' in filename or 'GPX' in filename:
         plot_gpx(filename, 'blue')

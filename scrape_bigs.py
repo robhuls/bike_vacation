@@ -21,6 +21,8 @@ def scrape_bigs(big_numbers):
                 bigs[big_number]['name'] = line.split('<title>')[1].split('</title>')[0].split(' - ')[0]
             elif 'Rank Zone' in line:
                 bigs[big_number]['zone'] = int(line.split('Zone')[1].split('(Claims)')[0])
+            if 'zone' not in bigs[big_number].keys():
+                bigs[big_number]['zone'] = 11  # Only NATACHA does not have 'Rank Zone' entry
 
     with open('bigs.txt', 'w', encoding='utf8') as fid:
         fid.write('num,name,lat,lon,zone\n')
